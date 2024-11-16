@@ -5,25 +5,35 @@
 To develop a convolutional autoencoder for image denoising application.
 
 ## Problem Statement and Dataset
-
+In this experiment, we use an autoencoder to process handwritten digit images from the MNIST dataset. The autoencoder learns to encode and decode the images, reducing noise through layers like MaxPooling and convolutional. Then, we repurpose the encoded data to build a convolutional neural network for classifying digits into numerical values from 0 to 9. The goal is to create an accurate classifier for handwritten digits removing noise.
+![376165230-d1075826-836b-44e1-8ed4-330e3899a494](https://github.com/user-attachments/assets/3a11bc6e-853a-4c2e-b266-741b7199bc8e)
 ## Convolution Autoencoder Network Model
-
-Include the neural network model diagram.
+![376165283-ce6d8c1c-5d8f-44d3-b02d-639c26ff9ba1](https://github.com/user-attachments/assets/4dd52497-9e17-43e3-a835-d2d62e206767)
 
 ## DESIGN STEPS
 
 ### STEP 1:
-
+Import TensorFlow, Keras, NumPy, Matplotlib, and Pandas.
 ### STEP 2:
-
+Load MNIST dataset, normalize pixel values, add Gaussian noise, and clip values.
 ### STEP 3:
-
-Write your own steps
+Plot a subset of noisy test images.
+### STEP 4:
+Define encoder and decoder architecture using convolutional and upsampling layers.
+### STEP 5:
+Compile the autoencoder model with optimizer and loss function.
+### STEP 6:
+Train the autoencoder model with specified parameters and validation data.
+### STEP 7:
+Plot training and validation loss curves.
+### STEP 8:
+Use the trained model to reconstruct images and visualize original, noisy, and reconstructed images.
 
 ## PROGRAM
-### Name: Dhiyaneshwar P
-### Register Number: 2122221100009
-```py
+### Name: Aakash P
+### Register Number: 212222110001
+
+```python
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras import utils
@@ -53,17 +63,20 @@ for i in range(1, n + 1):
     ax.get_yaxis().set_visible(False)
 plt.show()
 input_img = keras.Input(shape=(28, 28, 1))
+
 x = layers.Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
 x = layers.MaxPooling2D((2, 2), padding='same')(x)
 x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
 encoded = layers.MaxPooling2D((2, 2), padding='same')(x)
+
 x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
 x = layers.UpSampling2D((2, 2))(x)
 x = layers.Conv2D(16, (3, 3), activation='relu', padding='same')(x)
 x = layers.UpSampling2D((2, 2))(x)
 decoded = layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+
 autoencoder = keras.Model(input_img, decoded)
-print('Name: Dhiyaneshwar P   Register Number:212222110009')
+print('Name: Aakash P  \nRegister Number:212222110001\n')
 autoencoder.summary()
 autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
 autoencoder.fit(x_train_noisy, x_train_scaled,
@@ -71,42 +84,58 @@ autoencoder.fit(x_train_noisy, x_train_scaled,
                 batch_size=128,
                 shuffle=True,
                 validation_data=(x_test_noisy, x_test_scaled))
+decoded_imgs = autoencoder.predict(x_test_noisy)
+history=autoencoder.fit(x_train_noisy, x_train_scaled,
+                epochs=2,
+                batch_size=128,
+                shuffle=True,
+                validation_data=(x_test_noisy, x_test_scaled))
+decoded_imgs = autoencoder.predict(x_test_noisy)
 n = 10
-print('Name:Dhiyaneshwar P    Register Number:212222110009')
+print('Name: Dhiyaneshwar P\nRegister Number:212222110009\n')
 plt.figure(figsize=(20, 4))
-
-# Predict on the test data to get the decoded images
-decoded_imgs = autoencoder.predict(x_test_noisy) # This line is added to get the decoded images
-
 for i in range(1, n + 1):
+    # Display original
     ax = plt.subplot(3, n, i)
     plt.imshow(x_test_scaled[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
+
+    # Display noisy
     ax = plt.subplot(3, n, i+n)
     plt.imshow(x_test_noisy[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
+
+    # Display reconstruction
     ax = plt.subplot(3, n, i + 2*n)
-    plt.imshow(decoded_imgs[i].reshape(28, 28)) # Now decoded_imgs is defined and can be plotted
+    plt.imshow(decoded_imgs[i].reshape(28, 28))
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 plt.show()
-```
+print("Dhiyaneshwar P\n212222110009")
+plt.plot(history.history['loss'], label='Training Loss')
+plt.plot(history.history['val_loss'], label='Validation Loss')
+plt.title('Training and Validation Loss vs Iterations')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.legend()
+plt.grid(True)
+plt.show()
 
+```
 ## OUTPUT
 
 ### Training Loss, Validation Loss Vs Iteration Plot
+![image](https://github.com/user-attachments/assets/cb8fbe36-40fd-4df9-8251-d14507a30472)
 
-Include your plot here
 
 ### Original vs Noisy Vs Reconstructed Image
-
-![image](https://github.com/user-attachments/assets/2caf200e-6fde-49f1-ada2-7229b38e5195)
-
+![image](https://github.com/user-attachments/assets/4e0fe6dc-6290-49fe-b424-9ee9db3a0686)
 
 
-## RESULT
+## RESULT:
+Thus, the convolutional autoencoder for image denoising application has been successfully developed.
